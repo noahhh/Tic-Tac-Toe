@@ -9,6 +9,21 @@ Player = Struct.new(:mark)
 	@player2 = Player.new("O")
   end
 
+  def play_game
+    start_game
+    until game_over?
+      puts "pick a square"
+      display_board
+      set_move(is_valid_pick?)
+    end
+  end
+
+  def start_game
+    puts "\n Where would you like to place your mark?"
+    display_board
+    player_pick
+  end
+
   def display_board
 		grid.each_with_index do |square, index|
 			if (index+1) % 3 == 0
@@ -20,22 +35,31 @@ Player = Struct.new(:mark)
 		end
 	end
 
-  def start_game
-  	puts "\n Where would you like to place your mark?"
-  	display_board
-  	player_pick
+  def player_pick
+  	square = gets.chomp.match(/\d/)[0]
   end
 
-  # def player_pick
-  # 	square = gets.chomp.match(/\d/)[0]
-  # end
+  def set_move(square)
+    grid[square] = player_pick
+  end
 
-  # def valid_pick?
-  # 	square = player_pick
-  # end
+  def is_valid_pick?
+  	square = player_pick
+    if square_has_been_picked?(square)
+      puts "no"
+    else
+      return square
+    end
+  end
 
+  def square_has_been_picked?(square)
+    grid[square] == "X" || grid[square] == "O"
+  end
+
+  def game_over?
+  end
 
 end
 
 play = TicTacToe.new
-play.start_game
+play.play_game
