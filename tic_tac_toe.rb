@@ -1,10 +1,11 @@
 class TicTacToe
 
-attr_accessor :grid, :player1, :player2
+attr_accessor :grid, :turn, :player1, :player2
 Player = Struct.new(:mark)
 
   def initialize
 	@grid = (1..9).to_a
+  @turn = 0
 	@player1 = Player.new("X")
 	@player2 = Player.new("O")
   end
@@ -12,7 +13,9 @@ Player = Struct.new(:mark)
   def play_game
     start_game
     until game_over?
-      puts "pick a square"
+      self.turn += 1
+      puts "turn is #{@turn}"
+      puts "pick a square, player #{player_pick}"
       display_board
       set_move(is_valid_pick?)
     end
@@ -35,8 +38,13 @@ Player = Struct.new(:mark)
 		end
 	end
 
+  def turn
+    turn % 2 != 0 ? player1.mark : player2.mark
+  end
+
   def player_pick
   	square = gets.chomp.match(/\d/)[0]
+    puts square.to_i - 1
   end
 
   def set_move(square)
@@ -46,7 +54,7 @@ Player = Struct.new(:mark)
   def is_valid_pick?
   	square = player_pick
     if square_has_been_picked?(square)
-      puts "no"
+      puts "That square has already been picked.  Please pick again."
     else
       return square
     end
@@ -57,6 +65,7 @@ Player = Struct.new(:mark)
   end
 
   def game_over?
+    # winner || tie?
   end
 
 end
