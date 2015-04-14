@@ -1,3 +1,4 @@
+require 'pry'
 class TicTacToe
 
 attr_accessor :grid, :turns, :player1, :player2
@@ -12,26 +13,19 @@ Player = Struct.new(:mark)
 
   def play_game
     loop do
-      game_play_loop
-      # break unless play_again?
+      start_game
     end
     puts "Thanks for playing!"
   end
 
-  def game_play_loop
-    # start_game
+  def start_game
     until game_over?
-      self.turns += 1
-      puts "\nPlayer, pick a square:"
+      @turns += 1
+      puts "\n #{turn_player}, pick a square:"
       display_board
       set_move(is_valid_pick?)
     end
   end
-
-  # def start_game
-  #   display_board
-  #   player_pick
-  # end
 
   def display_board
 		grid.each_with_index do |square, index|
@@ -44,8 +38,8 @@ Player = Struct.new(:mark)
 		end
 	end
 
-  def turn
-    turn % 2 != 0 ? player1.mark : player2.mark
+  def turn_player
+    turns % 2 != 0 ? player1.mark : player2.mark
   end
 
   def player_pick
@@ -54,7 +48,7 @@ Player = Struct.new(:mark)
   end
 
   def set_move(square)
-    grid[square] = player_pick
+    grid[square] = turn_player
   end
 
   def is_valid_pick?
