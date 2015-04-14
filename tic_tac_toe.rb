@@ -21,7 +21,7 @@ Player = Struct.new(:mark)
   def start_game
     until game_over?
       @turns += 1
-      puts "\n #{turn_player}, pick a square:"
+      puts "\n #{turn?}, where would you like to place your mark?"
       display_board
       set_move(is_valid_pick?)
     end
@@ -38,7 +38,11 @@ Player = Struct.new(:mark)
 		end
 	end
 
-  def turn_player
+  def win?
+
+  end
+
+  def turn?
     turns % 2 != 0 ? player1.mark : player2.mark
   end
 
@@ -47,15 +51,27 @@ Player = Struct.new(:mark)
     return square.to_i - 1
   end
 
+  def ai_pick
+    square = @grid.sample.to_i - 1
+  end
+
+
   def set_move(square)
-    grid[square] = turn_player
+    grid[square] = turn?
   end
 
   def is_valid_pick?
     loop do
-  	square = player_pick
-      if square_has_been_picked?(square)
+      if turn? == "X"
+  	    square = player_pick
+      else
+        square = ai_pick
+      end
+      if square_has_been_picked?(square) && turn? == "X"
         puts "That square has already been picked.  Please pick again."
+        display_board
+      elsif square_has_been_picked?(square) && turn? == "O"
+        ai_pick
       else
         return square
       end
