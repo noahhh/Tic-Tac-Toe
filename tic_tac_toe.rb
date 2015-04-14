@@ -11,12 +11,13 @@ Player = Struct.new(:mark)
 	@player2 = Player.new("O")
   end
 
-  def play_game
-    loop do
-      start_game
-    end
-    puts "Thanks for playing!"
-  end
+  # def play_game
+  #   loop do
+  #     start_game
+  #     # break unless play_again?
+  #   end
+  #   puts "Thanks for playing!"
+  # end
 
   def start_game
     until game_over?
@@ -25,6 +26,8 @@ Player = Struct.new(:mark)
       display_board
       set_move(is_valid_pick?)
     end
+    display_board
+    play_again?
   end
 
   def display_board
@@ -38,8 +41,13 @@ Player = Struct.new(:mark)
 		end
 	end
 
-  def win?
+  def win_conditions
+    row1 = grid.each_index.select { |i| (i+1) <= 3 }
+    @win_conditions = [row1]
+  end
 
+  def win?
+    win_conditions.any? { |condition| condition.all? { |i| grid[i] == "X" } || condition.all? { |i| grid[i] == "O" } }
   end
 
   def turn?
@@ -83,10 +91,34 @@ Player = Struct.new(:mark)
   end
 
   def game_over?
-    false
+    win?
+  end
+
+  def reset_board
+    @grid = (1..9).to_a
+  end
+
+  def reset_turns
+    @turns = 0
+  end
+
+  def play_again?
+    puts "\nPlay again? (Y/N):"
+    answer = gets.chomp.downcase
+    if answer == "y"
+      reset_board
+      reset_turns
+      start_game
+    elsif answer == "n"
+      puts "Goodbye"
+      exit
+    else
+      puts "Please answer with (Y/N)"
+      play_again?
+    end
   end
 
 end
 
 play = TicTacToe.new
-play.play_game
+play.start_game
