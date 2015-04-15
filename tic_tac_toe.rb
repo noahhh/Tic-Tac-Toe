@@ -11,14 +11,6 @@ Player = Struct.new(:mark)
 	@player2 = Player.new("O")
   end
 
-  # def play_game
-  #   loop do
-  #     start_game
-  #     # break unless play_again?
-  #   end
-  #   puts "Thanks for playing!"
-  # end
-
   def start_game
     until game_over?
       @turns += 1
@@ -43,7 +35,14 @@ Player = Struct.new(:mark)
 
   def win_conditions
     row1 = grid.each_index.select { |i| (i+1) <= 3 }
-    @win_conditions = [row1]
+    row2 = grid.each_index.select { |i| (i+1) > 3 && (i+1) < 7 }
+    row3 = grid.each_index.select { |i| (i+1) >= 7 }
+    col1 = grid.each_index.select { |i| (i+1) == 1 || (i+1) == 4 || (i+1) == 7 }
+    col2 = grid.each_index.select { |i| (i+1) == 2 || (i+1) == 5 || (i+1) == 8 }
+    col3 = grid.each_index.select { |i| (i+1) == 3 || (i+1) == 6 || (i+1) == 9 }
+    diagonal1 = grid.each_index.select { |i| (i+1) == 1 || (i+1) == 5 || (i+1) == 9 }
+    diagonal2 = grid.each_index.select { |i| (i+1) == 3 || (i+1) == 5 || (i+1) == 7 }
+    @win_conditions = [row1,row2,row3,col1,col2,col3,diagonal1,diagonal2]
   end
 
   def win?
@@ -55,14 +54,13 @@ Player = Struct.new(:mark)
   end
 
   def player_pick
-  	square = gets.chomp.match(/\d/)[0]
+  	square = gets.chomp.match(/\d/)[0] # [0] or otherwise would return #<MatchData "1">/couldn't turn in to integer
     return square.to_i - 1
   end
 
   def ai_pick
     square = @grid.sample.to_i - 1
   end
-
 
   def set_move(square)
     grid[square] = turn?
@@ -94,14 +92,6 @@ Player = Struct.new(:mark)
     win?
   end
 
-  def reset_board
-    @grid = (1..9).to_a
-  end
-
-  def reset_turns
-    @turns = 0
-  end
-
   def play_again?
     puts "\nPlay again? (Y/N):"
     answer = gets.chomp.downcase
@@ -116,6 +106,14 @@ Player = Struct.new(:mark)
       puts "Please answer with (Y/N)"
       play_again?
     end
+  end
+
+  def reset_board
+    @grid = (1..9).to_a
+  end
+
+  def reset_turns
+    @turns = 0
   end
 
 end
