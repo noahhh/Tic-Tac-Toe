@@ -18,6 +18,7 @@ Player = Struct.new(:mark)
       display_board
       set_move(is_valid_pick?)
     end
+    game_message
     display_board
     play_again?
   end
@@ -47,6 +48,10 @@ Player = Struct.new(:mark)
 
   def win?
     win_conditions.any? { |condition| condition.all? { |i| grid[i] == "X" } || condition.all? { |i| grid[i] == "O" } }
+  end
+
+  def tie?
+    win_conditions.all? { |condition| condition.all? { |i| grid[i] == "X" || grid[i] == "O" } }
   end
 
   def turn?
@@ -89,10 +94,11 @@ Player = Struct.new(:mark)
   end
 
   def game_over?
-    win?
+    win? || tie?
   end
 
   def play_again?
+    # game_message
     puts "\nPlay again? (Y/N):"
     answer = gets.chomp.downcase
     if answer == "y"
@@ -114,6 +120,11 @@ Player = Struct.new(:mark)
 
   def reset_turns
     @turns = 0
+  end
+
+  def game_message
+    puts "\nPlayer #{turn?} wins!" if win?
+    puts "\nThe game ends in a tie!" if tie? && !win?
   end
 
 end
