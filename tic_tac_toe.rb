@@ -1,11 +1,11 @@
 require 'pry'
 class TicTacToe
 
-attr_accessor :grid, :turns, :player1, :player2
+attr_accessor :board, :turns, :player1, :player2
 Player = Struct.new(:mark)
 
   def initialize
-	@grid = (1..9).to_a
+	@board = (1..9).to_a
   @turns = 0
 	@player1 = Player.new("X")
 	@player2 = Player.new("O")
@@ -14,7 +14,11 @@ Player = Struct.new(:mark)
   def start_game
     until game_over?
       @turns += 1
-      puts "\n #{turn?}, where would you like to place your mark?"
+      if turn? == "X"
+        puts "\n #{turn?}, enter the number where you would like to place your mark."
+      elsif turn? == "O"
+        puts "\n #{turn?} places his mark."
+      end
       display_board
       set_move(is_valid_pick?)
     end
@@ -24,7 +28,7 @@ Player = Struct.new(:mark)
   end
 
   def display_board
-		grid.each_with_index do |square, index|
+		board.each_with_index do |square, index|
 			if (index+1) % 3 == 0
 				print " #{square} \n"
 				print "-----------\n" if index != 8 # no line on the bottom of the board
@@ -35,23 +39,23 @@ Player = Struct.new(:mark)
 	end
 
   def win_conditions
-    row1 = grid.each_index.select { |i| (i+1) <= 3 }
-    row2 = grid.each_index.select { |i| (i+1) > 3 && (i+1) < 7 }
-    row3 = grid.each_index.select { |i| (i+1) >= 7 }
-    col1 = grid.each_index.select { |i| (i+1) == 1 || (i+1) == 4 || (i+1) == 7 }
-    col2 = grid.each_index.select { |i| (i+1) == 2 || (i+1) == 5 || (i+1) == 8 }
-    col3 = grid.each_index.select { |i| (i+1) == 3 || (i+1) == 6 || (i+1) == 9 }
-    diagonal1 = grid.each_index.select { |i| (i+1) == 1 || (i+1) == 5 || (i+1) == 9 }
-    diagonal2 = grid.each_index.select { |i| (i+1) == 3 || (i+1) == 5 || (i+1) == 7 }
+    row1 = board.each_index.select { |i| (i+1) <= 3 }
+    row2 = board.each_index.select { |i| (i+1) > 3 && (i+1) < 7 }
+    row3 = board.each_index.select { |i| (i+1) >= 7 }
+    col1 = board.each_index.select { |i| (i+1) == 1 || (i+1) == 4 || (i+1) == 7 }
+    col2 = board.each_index.select { |i| (i+1) == 2 || (i+1) == 5 || (i+1) == 8 }
+    col3 = board.each_index.select { |i| (i+1) == 3 || (i+1) == 6 || (i+1) == 9 }
+    diagonal1 = board.each_index.select { |i| (i+1) == 1 || (i+1) == 5 || (i+1) == 9 }
+    diagonal2 = board.each_index.select { |i| (i+1) == 3 || (i+1) == 5 || (i+1) == 7 }
     @win_conditions = [row1,row2,row3,col1,col2,col3,diagonal1,diagonal2]
   end
 
   def win?
-    win_conditions.any? { |condition| condition.all? { |i| grid[i] == "X" } || condition.all? { |i| grid[i] == "O" } }
+    win_conditions.any? { |condition| condition.all? { |i| board[i] == "X" } || condition.all? { |i| board[i] == "O" } }
   end
 
   def tie?
-    win_conditions.all? { |condition| condition.all? { |i| grid[i] == "X" || grid[i] == "O" } }
+    win_conditions.all? { |condition| condition.all? { |i| board[i] == "X" || board[i] == "O" } }
   end
 
   def turn?
@@ -64,11 +68,11 @@ Player = Struct.new(:mark)
   end
 
   def ai_pick
-    square = @grid.sample.to_i - 1
+    square = @board.sample.to_i - 1
   end
 
   def set_move(square)
-    grid[square] = turn?
+    board[square] = turn?
   end
 
   def is_valid_pick?
@@ -90,7 +94,7 @@ Player = Struct.new(:mark)
   end
 
   def square_has_been_picked?(square)
-    grid[square] == "X" || grid[square] == "O"
+    board[square] == "X" || board[square] == "O"
   end
 
   def game_over?
@@ -98,7 +102,6 @@ Player = Struct.new(:mark)
   end
 
   def play_again?
-    # game_message
     puts "\nPlay again? (Y/N):"
     answer = gets.chomp.downcase
     if answer == "y"
@@ -115,7 +118,7 @@ Player = Struct.new(:mark)
   end
 
   def reset_board
-    @grid = (1..9).to_a
+    @board = (1..9).to_a
   end
 
   def reset_turns
