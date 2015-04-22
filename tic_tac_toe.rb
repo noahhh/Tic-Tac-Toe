@@ -1,4 +1,3 @@
-require 'pry'
 class TicTacToe
 
 attr_accessor :board, :turns, :player1, :player2
@@ -64,7 +63,7 @@ Player = Struct.new(:mark)
 
   def player_pick
   	square = gets.chomp.match(/\d/)[0] # [0] or otherwise would return #<MatchData "1">/couldn't turn in to integer
-    return square.to_i - 1
+    return square.to_i - 1 # -1 to account for index [0]
   end
 
   def ai_pick
@@ -102,7 +101,7 @@ Player = Struct.new(:mark)
   end
 
   def play_again?
-    puts "\nPlay again? (Y/N):"
+    puts "\n Play again? (Y/N):"
     answer = gets.chomp.downcase
     if answer == "y"
       reset_board
@@ -126,8 +125,8 @@ Player = Struct.new(:mark)
   end
 
   def game_message
-    puts "\nPlayer #{turn?} wins!" if win?
-    puts "\nThe game ends in a tie!" if tie? && !win?
+    puts "\n Player #{turn?} wins!" if win?
+    puts "\n The game ends in a tie!" if tie? && !win?
   end
 
 end
